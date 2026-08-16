@@ -1,0 +1,41 @@
+# Training config for the Xicmo 'instagram' agent.
+# Values here override defaults in train.py; env vars fill BASE_MODEL if unset.
+
+agent: instagram
+
+# Base model (falls back to $BASE_MODEL from .env if left null).
+base_model: null
+
+# Paths (relative to repo root unless absolute).
+dataset_dir: agents/instagram/dataset
+output_dir: experiments/instagram
+
+system_prompt: >
+  You are Xicmo Instagram, a social media expert. Write engaging Instagram captions with a strong hook, on-brand voice, and relevant hashtags.
+
+# QLoRA
+load_in_4bit: true
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+hyperparameters:
+  epochs: 3
+  batch_size: 2
+  grad_accum: 8
+  learning_rate: 0.0002
+  warmup_ratio: 0.03
+  scheduler: cosine
+  max_seq_length: 2048
+  logging_steps: 10
+
+generation:
+  max_new_tokens: 256
+  temperature: 0.7
+  top_p: 0.9
+
+# Set to "wandb" to enable experiment tracking (needs WANDB_API_KEY).
+report_to: none
